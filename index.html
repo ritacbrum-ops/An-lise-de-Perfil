@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapeamento de Perfil Comportamental DISC</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f3;color:#1a1a1a;min-height:100vh}
+  .container{max-width:620px;margin:0 auto;padding:1.5rem 1rem 3rem}
+  .card{background:#fff;border-radius:16px;padding:2rem;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+
+  /* INTRO */
+  .intro-header{text-align:center;margin-bottom:2rem}
+  .intro-logo{width:56px;height:56px;border-radius:14px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px}
+  .intro-header h1{font-size:22px;font-weight:600;margin-bottom:8px;color:#111}
+  .intro-header p{font-size:15px;color:#666;line-height:1.6}
+  .intro-meta{display:flex;gap:12px;justify-content:center;margin-top:1rem;flex-wrap:wrap}
+  .meta-pill{background:#f5f5f3;border-radius:20px;padding:5px 14px;font-size:13px;color:#555}
+  .name-wrap{margin:1.5rem 0 1rem}
+  .name-wrap label{font-size:14px;color:#555;display:block;margin-bottom:6px;font-weight:500}
+  .name-wrap input{width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:16px;outline:none;transition:border-color .2s}
+  .name-wrap input:focus{border-color:#1D9E75}
+  .disclaimer{font-size:13px;color:#888;line-height:1.5;margin-bottom:1.5rem;padding:12px;background:#f9f9f9;border-radius:8px}
+  .btn-start{width:100%;padding:14px;background:#1D9E75;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:background .2s}
+  .btn-start:hover{background:#0F6E56}
+
+  /* QUIZ */
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:13px;color:#888;margin-bottom:6px}
+  .progress-bar{height:5px;background:#eee;border-radius:3px}
+  .progress-fill{height:100%;border-radius:3px;background:#1D9E75;transition:width .35s ease}
+  .q-text{font-size:18px;font-weight:500;line-height:1.5;color:#111;margin-bottom:1.5rem}
+  .options{display:flex;flex-direction:column;gap:10px}
+  .opt{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1.5px solid #e8e8e8;border-radius:12px;cursor:pointer;background:#fff;transition:all .15s;text-align:left;width:100%}
+  .opt:hover{border-color:#b2dfdb;background:#f8fffe}
+  .opt.selected{border-color:#1D9E75;background:#E1F5EE}
+  .opt-letter{width:30px;height:30px;min-width:30px;border-radius:50%;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#888}
+  .opt.selected .opt-letter{background:#1D9E75;border-color:#1D9E75;color:#fff}
+  .opt-text{font-size:15px;color:#222;line-height:1.4;padding-top:5px}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;gap:10px}
+  .btn-nav{padding:11px 20px;border-radius:10px;font-size:15px;cursor:pointer;border:1.5px solid #e0e0e0;background:#fff;color:#333;transition:all .15s;font-weight:500}
+  .btn-nav:hover{background:#f5f5f3;border-color:#ccc}
+  .btn-nav:disabled{opacity:0.3;cursor:not-allowed}
+  .btn-next{background:#1D9E75;border-color:#1D9E75;color:#fff}
+  .btn-next:hover{background:#0F6E56;border-color:#0F6E56}
+  .error-msg{color:#E24B4A;font-size:13px;margin-top:8px;text-align:center;min-height:18px}
+
+  /* RESULT */
+  .result-top{text-align:center;padding:1rem 0 1.5rem}
+  .perfil-badge{display:inline-block;padding:6px 18px;border-radius:20px;font-size:13px;font-weight:600;margin-bottom:10px}
+  .result-name{font-size:24px;font-weight:700;color:#111;margin-bottom:4px}
+  .result-sub{font-size:15px;color:#666}
+  .bars-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:1.5rem 0}
+  .bar-card{background:#f9f9f9;border-radius:12px;padding:14px}
+  .bar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+  .bar-letter{font-size:20px;font-weight:700}
+  .bar-name-text{font-size:12px;color:#888}
+  .bar-track{height:8px;background:#e8e8e8;border-radius:4px;overflow:hidden;margin-bottom:6px}
+  .bar-fill{height:100%;border-radius:4px}
+  .bar-pct{font-size:14px;font-weight:600;color:#333}
+  .section{margin:1.5rem 0}
+  .section h3{font-size:15px;font-weight:600;color:#111;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .desc-box{padding:16px;border-radius:12px;background:#f9f9f9;font-size:15px;line-height:1.7;color:#333}
+  .tags{display:flex;flex-wrap:wrap;gap:8px}
+  .tag-pos{padding:6px 14px;border-radius:20px;font-size:13px;background:#E1F5EE;color:#0F6E56;font-weight:500}
+  .tag-neg{padding:6px 14px;border-radius:20px;font-size:13px;background:#FAECE7;color:#993C1D;font-weight:500}
+  .divider{border:none;border-top:1px solid #eee;margin:1.5rem 0}
+  .sec-box{padding:14px 16px;border-radius:12px;border:1.5px solid #e8e8e8;font-size:14px;line-height:1.6;color:#444}
+  .footer-note{font-size:12px;color:#aaa;text-align:center;margin-top:1.5rem;line-height:1.6}
+  .btn-restart{width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:10px;background:#fff;font-size:15px;cursor:pointer;color:#555;margin-top:1rem;transition:background .15s}
+  .btn-restart:hover{background:#f5f5f3}
+
+  @media(max-width:420px){
+    .bars-grid{grid-template-columns:1fr 1fr}
+    .card{padding:1.25rem}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- INTRO -->
+  <div id="screen-intro" class="card">
+    <div class="intro-header">
+      <div class="intro-logo">🧠</div>
+      <h1>Perfil Comportamental DISC</h1>
+      <p>Descubra como você age, decide e se relaciona com o mundo. Responda com sinceridade — não existe resposta certa ou errada.</p>
+      <div class="intro-meta">
+        <span class="meta-pill">📋 20 perguntas</span>
+        <span class="meta-pill">⏱ ~10 minutos</span>
+        <span class="meta-pill">📊 Resultado imediato</span>
+      </div>
+    </div>
+    <div class="name-wrap">
+      <label>Seu nome completo</label>
+      <input type="text" id="nome-input" placeholder="Digite seu nome..." autocomplete="name" />
+    </div>
+    <p class="disclaimer">Este teste é baseado na teoria comportamental DISC de William Marston. Seu objetivo é educacional e reflexivo. Os resultados são indicativos, não diagnósticos.</p>
+    <button class="btn-start" onclick="startQuiz()">Iniciar avaliação →</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="screen-quiz" class="card" style="display:none">
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="q-label">Pergunta 1 de 20</span>
+        <span id="q-pct">5%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress" style="width:5%"></div></div>
+    </div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="error-msg" id="error-msg"></div>
+    <div class="nav">
+      <button class="btn-nav" id="btn-prev" onclick="prevQ()" disabled>← Anterior</button>
+      <button class="btn-nav btn-next" id="btn-next" onclick="nextQ()">Próxima →</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="screen-result" class="card" style="display:none">
+    <div id="result-content"></div>
+    <button class="btn-restart" onclick="restart()">↩ Refazer o teste</button>
+  </div>
+
+</div>
+
+<script>
+const perguntas = [
+  {t:"No trabalho ou nos estudos, o que melhor descreve você?",ops:[
+    {t:"Gosto de liderar, tomar decisões e ir direto ao ponto.",f:"D"},
+    {t:"Me animo com pessoas, ideias novas e oportunidades de me expressar.",f:"I"},
+    {t:"Prefiro um ritmo constante, estabilidade e cooperação.",f:"S"},
+    {t:"Me preocupo com qualidade, detalhes e fazer certo desde o início.",f:"C"}
+  ]},
+  {t:"Quando preciso resolver um problema difícil, eu geralmente:",ops:[
+    {t:"Ataco de frente, busco resultados rápidos e não tenho medo de errar.",f:"D"},
+    {t:"Converso com outras pessoas, busco inspiração e novas perspectivas.",f:"I"},
+    {t:"Analiso com calma, sigo um método e evito mudanças bruscas.",f:"S"},
+    {t:"Pesquiso fundo, coleto dados e só ajo quando tenho certeza.",f:"C"}
+  ]},
+  {t:"Em um grupo de trabalho, qual papel você tende a assumir?",ops:[
+    {t:"O que define o rumo e cobra entregas.",f:"D"},
+    {t:"O que anima o grupo e traz ideias criativas.",f:"I"},
+    {t:"O que garante harmonia e apoia os colegas.",f:"S"},
+    {t:"O que verifica se tudo está correto e bem planejado.",f:"C"}
+  ]},
+  {t:"Quando alguém discorda de você, como você costuma reagir?",ops:[
+    {t:"Defendo meu ponto com firmeza e não recuo facilmente.",f:"D"},
+    {t:"Tento convencer com entusiasmo e bom humor.",f:"I"},
+    {t:"Ouço com calma e busco um meio-termo.",f:"S"},
+    {t:"Peço dados e fatos antes de mudar de opinião.",f:"C"}
+  ]},
+  {t:"Como você se sente em relação a prazos e urgências?",ops:[
+    {t:"Funciono bem sob pressão — gosto do desafio.",f:"D"},
+    {t:"Fico motivado, mas às vezes me distraio com outras coisas.",f:"I"},
+    {t:"Prefiro prazos previsíveis — mudanças de última hora me estressam.",f:"S"},
+    {t:"Me preocupo muito — quero entregar com qualidade, sem erros.",f:"C"}
+  ]},
+  {t:"Numa situação nova e desconhecida, você tende a:",ops:[
+    {t:"Agir primeiro e ajustar no caminho.",f:"D"},
+    {t:"Falar com pessoas, explorar possibilidades e se empolgar.",f:"I"},
+    {t:"Esperar entender melhor antes de se comprometer.",f:"S"},
+    {t:"Estudar o máximo possível antes de qualquer passo.",f:"C"}
+  ]},
+  {t:"O que mais te motiva em uma atividade ou trabalho?",ops:[
+    {t:"Superar desafios e ver resultados concretos.",f:"D"},
+    {t:"Trabalhar com pessoas, ser reconhecido e ter liberdade criativa.",f:"I"},
+    {t:"Ter um ambiente seguro, estável e relações de confiança.",f:"S"},
+    {t:"Aprender muito, ter precisão e garantir a qualidade do que entrego.",f:"C"}
+  ]},
+  {t:"Como você se comporta em relação a regras e procedimentos?",ops:[
+    {t:"Sigo quando fazem sentido, mas prefiro ter autonomia.",f:"D"},
+    {t:"Sigo em geral, mas costumo improvisar quando acho melhor.",f:"I"},
+    {t:"Sigo com cuidado — gosto de saber o que é esperado de mim.",f:"S"},
+    {t:"Sigo à risca — regras existem por boas razões.",f:"C"}
+  ]},
+  {t:"Como você prefere se comunicar com outras pessoas?",ops:[
+    {t:"De forma direta, objetiva e sem rodeios.",f:"D"},
+    {t:"De forma animada, expansiva e com muito contato.",f:"I"},
+    {t:"De forma tranquila, empática e com atenção ao outro.",f:"S"},
+    {t:"De forma precisa, organizada e com base em fatos.",f:"C"}
+  ]},
+  {t:"Quando precisa trabalhar em equipe, o que mais te incomoda?",ops:[
+    {t:"Pessoas que são lentas ou indecisas demais.",f:"D"},
+    {t:"Ambientes muito frios, formais ou sem troca.",f:"I"},
+    {t:"Conflitos, cobranças excessivas ou mudanças constantes.",f:"S"},
+    {t:"Trabalho mal feito, sem critério ou cheio de erros.",f:"C"}
+  ]},
+  {t:"Ao tomar uma decisão importante, você costuma:",ops:[
+    {t:"Decidir rápido com base na intuição e nos objetivos.",f:"D"},
+    {t:"Consultar pessoas, ouvir opiniões e confiar no feeling.",f:"I"},
+    {t:"Pesar prós e contras com cuidado e ouvir quem conhece bem.",f:"S"},
+    {t:"Analisar dados, seguir critérios e minimizar riscos.",f:"C"}
+  ]},
+  {t:"Como você lida com críticas ao seu trabalho?",ops:[
+    {t:"Encaro como parte do jogo, mas sei defender minha posição.",f:"D"},
+    {t:"Fico um pouco abalado, mas logo supero e sigo em frente.",f:"I"},
+    {t:"Levo a sério e me preocupo com o impacto no relacionamento.",f:"S"},
+    {t:"Analiso com cuidado para entender onde errei e melhorar.",f:"C"}
+  ]},
+  {t:"Qual destas frases combina mais com você?",ops:[
+    {t:"'Feito é melhor que perfeito.'",f:"D"},
+    {t:"'A vida é muito curta para ser vivida sem entusiasmo.'",f:"I"},
+    {t:"'Passo a passo, devagar e sempre.'",f:"S"},
+    {t:"'Se vale a pena fazer, vale a pena fazer bem feito.'",f:"C"}
+  ]},
+  {t:"Em situações de conflito, você tende a:",ops:[
+    {t:"Ir direto ao ponto e resolver logo, mesmo que seja incômodo.",f:"D"},
+    {t:"Tentar aliviar a tensão com humor e conversa.",f:"I"},
+    {t:"Evitar o conflito e buscar um acordo que agrada a todos.",f:"S"},
+    {t:"Analisar friamente os fatos e propor uma solução racional.",f:"C"}
+  ]},
+  {t:"Numa apresentação ou projeto importante, você se preocupa mais com:",ops:[
+    {t:"Causar impacto e mostrar resultados.",f:"D"},
+    {t:"Engajar o público e deixar uma boa impressão.",f:"I"},
+    {t:"Ser claro, útil e não deixar ninguém de fora.",f:"S"},
+    {t:"Ter tudo correto, bem estruturado e sem falhas.",f:"C"}
+  ]},
+  {t:"Como você reage a mudanças inesperadas?",ops:[
+    {t:"Adapto rápido — mudanças são oportunidades.",f:"D"},
+    {t:"Fico curioso e animado com as novas possibilidades.",f:"I"},
+    {t:"Fico desconfortável no início, mas me adapto com o tempo.",f:"S"},
+    {t:"Preciso entender bem o motivo antes de aceitar a mudança.",f:"C"}
+  ]},
+  {t:"Como você organiza seu tempo e suas tarefas?",ops:[
+    {t:"Priorizo o que tem mais impacto e deixo o resto para depois.",f:"D"},
+    {t:"Começo várias coisas ao mesmo tempo e vou concluindo no fluxo.",f:"I"},
+    {t:"Sigo uma rotina estável e consigo cumprir o que planejo.",f:"S"},
+    {t:"Faço listas detalhadas, sigo passo a passo e não gosto de pendências.",f:"C"}
+  ]},
+  {t:"O que as pessoas costumam elogiar em você?",ops:[
+    {t:"Minha iniciativa, coragem e capacidade de liderar.",f:"D"},
+    {t:"Meu entusiasmo, criatividade e facilidade com pessoas.",f:"I"},
+    {t:"Minha paciência, confiabilidade e lealdade.",f:"S"},
+    {t:"Minha organização, precisão e atenção aos detalhes.",f:"C"}
+  ]},
+  {t:"Quando você precisa aprender algo novo, prefere:",ops:[
+    {t:"Ir fazendo e aprendendo na prática, mesmo errando.",f:"D"},
+    {t:"Conversar com quem sabe e aprender de forma dinâmica.",f:"I"},
+    {t:"Ter um guia claro, exemplos e tempo para absorver.",f:"S"},
+    {t:"Ler bastante, estudar fundo antes de colocar em prática.",f:"C"}
+  ]},
+  {t:"Como você se sente em relação a reconhecimento e visibilidade?",ops:[
+    {t:"Gosto de ser reconhecido pelos resultados que entrego.",f:"D"},
+    {t:"Adoro ser visto, elogiado e fazer parte das conversas.",f:"I"},
+    {t:"Fico feliz com o reconhecimento, mas não preciso estar no centro.",f:"S"},
+    {t:"Prefiro que meu trabalho fale por si — a qualidade é o reconhecimento.",f:"C"}
+  ]}
+];
+
+const perfis = {
+  D:{nome:"Dominante",emoji:"🔴",cor:"#D85A30",bgClaro:"#FAECE7",txClaro:"#993C1D",
+     desc:"Você tem um perfil orientado para ação e resultados. Toma decisões com rapidez, gosta de desafios e não tem medo de liderar. Sua energia é direcionada para superar obstáculos e alcançar metas de forma direta e eficiente.",
+     pontos:["Liderança natural e iniciativa","Decisão rápida sob pressão","Foco em resultados e eficiência","Coragem para enfrentar desafios"],
+     atencao:["Pode ser percebido como impaciente","Tendência a agir antes de ouvir os outros","Dificuldade em delegar controle","Pode negligenciar detalhes importantes"]},
+  I:{nome:"Influente",emoji:"🟡",cor:"#BA7517",bgClaro:"#FAEEDA",txClaro:"#854F0B",
+     desc:"Você tem um perfil comunicativo e orientado para pessoas. Seu entusiasmo é contagiante, você se destaca em ambientes colaborativos e tem facilidade para inspirar e motivar os outros. Criatividade e otimismo são suas marcas.",
+     pontos:["Excelente comunicador e articulador","Capacidade de motivar e engajar","Criatividade e pensamento inovador","Facilidade para construir relações"],
+     atencao:["Pode ter dificuldade em cumprir prazos","Tendência a começar mais do que terminar","Pouco atento a detalhes e processos","Decisões às vezes emocionais demais"]},
+  S:{nome:"Estável",emoji:"🟢",cor:"#0F6E56",bgClaro:"#E1F5EE",txClaro:"#085041",
+     desc:"Você tem um perfil equilibrado, confiável e cooperativo. Valoriza ambientes harmoniosos e relações de confiança. É o tipo de pessoa que sustenta a equipe com consistência, paciência e lealdade.",
+     pontos:["Paciência e escuta ativa","Lealdade e confiabilidade","Habilidade de mediar conflitos","Consistência e ritmo constante"],
+     atencao:["Pode ter dificuldade com mudanças rápidas","Tendência a evitar conflitos necessários","Pode demorar para se posicionar","Dificuldade em dizer não"]},
+  C:{nome:"Conforme",emoji:"🔵",cor:"#185FA5",bgClaro:"#E6F1FB",txClaro:"#0C447C",
+     desc:"Você tem um perfil analítico e orientado para qualidade. Sua precisão, organização e atenção aos detalhes garantem excelência no que produz. É criterioso, metódico e prefere fazer certo desde o início.",
+     pontos:["Precisão e atenção a detalhes","Organização e planejamento rigoroso","Pensamento analítico e crítico","Comprometimento com a qualidade"],
+     atencao:["Pode ser percebido como perfeccionista demais","Tendência a demorar em análises","Dificuldade em lidar com ambiguidade","Pode ter dificuldade com improvisos"]}
+};
+
+const barColors={D:"#D85A30",I:"#EF9F27",S:"#1D9E75",C:"#378ADD"};
+
+let respostas=[];
+let qAtual=0;
+let nomeAluno="";
+
+function show(id){
+  ["screen-intro","screen-quiz","screen-result"].forEach(s=>{
+    document.getElementById(s).style.display=s===id?"block":"none";
+  });
+}
+
+function startQuiz(){
+  const n=document.getElementById("nome-input").value.trim();
+  if(!n){document.getElementById("nome-input").focus();return;}
+  nomeAluno=n;
+  respostas=new Array(perguntas.length).fill(null);
+  qAtual=0;
+  show("screen-quiz");
+  renderQ();
+}
+
+function renderQ(){
+  const q=perguntas[qAtual];
+  const total=perguntas.length;
+  const pct=Math.round((qAtual+1)/total*100);
+  document.getElementById("q-label").textContent="Pergunta "+(qAtual+1)+" de "+total;
+  document.getElementById("q-pct").textContent=pct+"%";
+  document.getElementById("progress").style.width=pct+"%";
+  document.getElementById("q-text").textContent=q.t;
+  document.getElementById("error-msg").textContent="";
+  const letras=["A","B","C","D"];
+  const opts=document.getElementById("options");
+  opts.innerHTML="";
+  q.ops.forEach((op,i)=>{
+    const btn=document.createElement("button");
+    btn.className="opt"+(respostas[qAtual]===i?" selected":"");
+    btn.innerHTML=`<div class="opt-letter">${letras[i]}</div><div class="opt-text">${op.t}</div>`;
+    btn.onclick=()=>{
+      respostas[qAtual]=i;
+      document.querySelectorAll(".opt").forEach(o=>o.classList.remove("selected"));
+      btn.classList.add("selected");
+      document.getElementById("error-msg").textContent="";
+    };
+    opts.appendChild(btn);
+  });
+  document.getElementById("btn-prev").disabled=qAtual===0;
+  document.getElementById("btn-next").textContent=qAtual===total-1?"Ver meu resultado →":"Próxima →";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function nextQ(){
+  if(respostas[qAtual]===null){
+    document.getElementById("error-msg").textContent="Selecione uma opção para continuar.";
+    return;
+  }
+  if(qAtual<perguntas.length-1){qAtual++;renderQ();}
+  else{showResult();}
+}
+
+function prevQ(){if(qAtual>0){qAtual--;renderQ();}}
+
+function showResult(){
+  const scores={D:0,I:0,S:0,C:0};
+  respostas.forEach((r,qi)=>{if(r!==null){scores[perguntas[qi].ops[r].f]++;}});
+  const total=perguntas.length;
+  const sorted=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const [primL]=sorted[0];
+  const [segL,segPts]=sorted[1];
+  const prim=perfis[primL];
+  const seg=perfis[segL];
+  const pct=l=>Math.round(scores[l]/total*100);
+
+  const html=`
+    <div class="result-top">
+      <div class="perfil-badge" style="background:${prim.bgClaro};color:${prim.txClaro}">
+        ${prim.emoji} ${prim.nome}${segL!==primL&&segPts>=3?" / "+seg.emoji+" "+seg.nome:""}
+      </div>
+      <div class="result-name">${nomeAluno}</div>
+      <div class="result-sub">Perfil predominante: <strong>${prim.nome}</strong>${segL!==primL&&segPts>=3?" com traços <strong>"+seg.nome+"</strong>":""}</div>
+    </div>
+
+    <div class="bars-grid">
+      ${["D","I","S","C"].map(l=>`
+        <div class="bar-card">
+          <div class="bar-top">
+            <span class="bar-letter" style="color:${barColors[l]}">${l}</span>
+            <span class="bar-name-text">${perfis[l].nome}</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:${pct(l)}%;background:${barColors[l]}"></div></div>
+          <div class="bar-pct">${pct(l)}%</div>
+        </div>
+      `).join("")}
+    </div>
+
+    <div class="section">
+      <h3>📌 Sobre o seu perfil</h3>
+      <div class="desc-box">${prim.desc}</div>
+    </div>
+
+    <div class="section">
+      <h3>✅ Pontos fortes</h3>
+      <div class="tags">${prim.pontos.map(p=>`<span class="tag-pos">${p}</span>`).join("")}</div>
+    </div>
+
+    <div class="section">
+      <h3>⚠️ Pontos de atenção</h3>
+      <div class="tags">${prim.atencao.map(a=>`<span class="tag-neg">${a}</span>`).join("")}</div>
+    </div>
+
+    ${segL!==primL&&segPts>=3?`
+    <hr class="divider">
+    <div class="section">
+      <h3>${seg.emoji} Traços secundários — ${seg.nome}</h3>
+      <div class="sec-box">${seg.desc}</div>
+    </div>`:""}
+
+    <p class="footer-note">Este teste é baseado na teoria DISC de William Marston (1928) e tem finalidade educacional e reflexiva.<br>Os resultados são indicativos — não substituem avaliações profissionais.</p>
+  `;
+
+  document.getElementById("result-content").innerHTML=html;
+  show("screen-result");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function restart(){
+  document.getElementById("nome-input").value="";
+  show("screen-intro");
+}
+</script>
+</body>
+</html>
